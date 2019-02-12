@@ -188,9 +188,9 @@ namespace FMODUnity
             #if UNITY_EDITOR
                 #if UNITY_2017_2_OR_NEWER
             EditorApplication.playModeStateChanged += HandlePlayModeStateChange;
-                #elif UNITY_2017_1_OR_NEWER
+                #elif UNITY_5_6_OR_NEWER || UNITY_5
             EditorApplication.playmodeStateChanged += HandleOnPlayModeChanged;
-                #endif // UNITY_2017_2_OR_NEWER
+                #endif
             #endif // UNITY_EDITOR
 
             FMOD.RESULT result = FMOD.RESULT.OK;
@@ -524,10 +524,10 @@ retry:
             instance = null;
         }
 
-        #if UNITY_2017_2_OR_NEWER
+    #if UNITY_2017_2_OR_NEWER
         void HandlePlayModeStateChange(PlayModeStateChange state)
         {
-            if (state == PlayModeStateChange.ExitingEditMode)
+            if (state == PlayModeStateChange.ExitingEditMode || state == PlayModeStateChange.EnteredEditMode)
             {
                 Destroy();
             }
@@ -536,11 +536,10 @@ retry:
                 isQuitting = false;
             }
         }
-        #elif UNITY_2017_1_OR_NEWER
+    #elif UNITY_5_6_OR_NEWER || UNITY_5
         void HandleOnPlayModeChanged()
         {
-            if (EditorApplication.isPlayingOrWillChangePlaymode &&
-                !EditorApplication.isPlaying)
+            if (!EditorApplication.isPlaying)
             {
                 Destroy();
             }
@@ -549,7 +548,7 @@ retry:
                 isQuitting = false;
             }
         }
-        #endif // UNITY_2017_2_OR_NEWER
+    #endif
 #endif
 
 #if UNITY_IOS
